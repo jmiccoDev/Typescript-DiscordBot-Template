@@ -7,90 +7,90 @@ import {
 import type { Command } from '../types/command';
 
 /**
- * Template per creare nuovi comandi slash
+ * Template for creating new slash commands
  *
- * ISTRUZIONI:
- * 1. Copia questo file nella cartella appropriata (fun/, admin/, etc.)
- * 2. Rinomina il file con il nome del comando
- * 3. Modifica la proprietà 'data' con le informazioni del comando
- * 4. Implementa la logica nell'execute function
- * 5. Opzionalmente, imposta cooldown, requiredLevel, isGlobal e guild
+ * INSTRUCTIONS:
+ * 1. Copy this file to the appropriate folder (fun/, admin/, etc.)
+ * 2. Rename the file with the command name
+ * 3. Modify the 'data' property with command information
+ * 4. Implement the logic in the execute function
+ * 5. Optionally, set cooldown, requiredLevel, isGlobal and guild
  *
- * OPZIONI COMUNI PER SLASH COMMANDS:
- * - addStringOption(): per input di testo
- * - addIntegerOption(): per numeri interi
- * - addBooleanOption(): per true/false
- * - addUserOption(): per selezionare un utente
- * - addChannelOption(): per selezionare un canale
- * - addRoleOption(): per selezionare un ruolo
+ * COMMON OPTIONS FOR SLASH COMMANDS:
+ * - addStringOption(): for text input
+ * - addIntegerOption(): for integer numbers
+ * - addBooleanOption(): for true/false
+ * - addUserOption(): to select a user
+ * - addChannelOption(): to select a channel
+ * - addRoleOption(): to select a role
  *
- * LIVELLI DI PERMESSO:
- * - 0: Bot Owner (esclusivamente proprietari del bot)
+ * PERMISSION LEVELS:
+ * - 0: Bot Owner (exclusively bot owners)
  * - 1: User (default)
  * - 2: Moderator
  * - 3: Administrator
  * - 4: Owner
  * 
- * NOTA: Se requiredLevel non è definito, QUALSIASI UTENTE può eseguire il comando senza controlli sui ruoli
+ * NOTE: If requiredLevel is not defined, ANY USER can execute the command without role checks
  *
- * SCOPE DEI COMANDI:
- * - isGlobal: true = comando globale (disponibile ovunque)
- * - isGlobal: false/undefined + guild: "GUILD_ID" = comando specifico per quella guild
- * - isGlobal: false/undefined + guild: undefined = usa DEFAULT_GUILD_ID dal config
+ * COMMAND SCOPE:
+ * - isGlobal: true = global command (available everywhere)
+ * - isGlobal: false/undefined + guild: "GUILD_ID" = specific command for that guild
+ * - isGlobal: false/undefined + guild: undefined = use DEFAULT_GUILD_ID from config
  */
 
 const command: Command = {
   data: new SlashCommandBuilder()
-    .setName('template') // Nome del comando (solo lettere minuscole, numeri e trattini)
-    .setDescription('Comando template di esempio') // Descrizione del comando
+    .setName('template') // Command name (only lowercase letters, numbers and hyphens)
+    .setDescription('Example template command') // Command description
     .addStringOption(
       option =>
-        option.setName('esempio').setDescription('Un parametro di esempio').setRequired(false) // true se il parametro è obbligatorio
+        option.setName('example').setDescription('An example parameter').setRequired(false) // true if the parameter is mandatory
     ),
 
-  // Cooldown in secondi (opzionale)
+  // Cooldown in seconds (optional)
   cooldown: 5,
 
-  // Livello di permesso richiesto (opzionale)
-  // Se non definito, QUALSIASI UTENTE può eseguire il comando senza controlli sui ruoli
+  // Required permission level (optional)
+  // If not defined, ANY USER can execute the command without role checks
   // requiredLevel: 1,
 
-  // Scope del comando (opzionale)
-  isGlobal: true, // true per comando globale, false per guild-specific
-  // guild: "123456789012345678", // ID della guild specifica (se non globale)
+  // Command scope (optional)
+  isGlobal: true, // true for global command, false for guild-specific
+  // guild: "123456789012345678", // Specific guild ID (if not global)
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    // Ottieni i parametri del comando
-    const esempioParam = interaction.options.getString('esempio');
+    // Get command parameters
+    const exampleParam = interaction.options.getString('example');
 
-    // Esempio di embed di risposta
+    // Example response embed
     const embed = new EmbedBuilder()
       .setColor(Colors.Blue)
-      .setTitle('🔧 Comando Template')
-      .setDescription('Questo è un comando template di esempio!')
+      .setTitle('🔧 Template Command')
+      .setDescription('This is an example template command!')
       .addFields(
-        { name: 'Parametro ricevuto', value: esempioParam || 'Nessuno', inline: true },
-        { name: 'Utente', value: interaction.user.tag, inline: true },
-        { name: 'Scope', value: command.isGlobal ? 'Globale' : 'Guild-specific', inline: true }
+        { name: 'Parameter received', value: exampleParam || 'None', inline: true },
+        { name: 'User', value: interaction.user.tag, inline: true },
+        { name: 'Scope', value: command.isGlobal ? 'Global' : 'Guild-specific', inline: true }
       )
       .setTimestamp()
       .setFooter({ text: 'Template Bot', iconURL: interaction.client.user?.displayAvatarURL() });
 
-    // Invia la risposta
+    // Send the response
     await interaction.reply({ embeds: [embed] });
 
-    // Esempi di altri tipi di risposta:
+    // Examples of other response types:
 
-    // Risposta semplice
-    // await interaction.reply('Messaggio semplice');
+    // Simple response
+    // await interaction.reply('Simple message');
 
-    // Risposta ephemeral (visibile solo all'utente)
-    // await interaction.reply({ content: 'Messaggio privato', ephemeral: true });
+    // Ephemeral response (visible only to the user)
+    // await interaction.reply({ content: 'Private message', ephemeral: true });
 
-    // Risposta differita (per operazioni lunghe)
+    // Deferred response (for long operations)
     // await interaction.deferReply();
-    // // ... operazioni lunghe ...
-    // await interaction.editReply('Operazione completata!');
+    // // ... long operations ...
+    // await interaction.editReply('Operation completed!');
   },
 };
 

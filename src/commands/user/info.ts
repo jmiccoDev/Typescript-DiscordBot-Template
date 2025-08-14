@@ -9,7 +9,7 @@ import type { Command } from '../../types/command';
 const command: Command = {
   data: new SlashCommandBuilder()
     .setName('info')
-    .setDescription('Mostra le informazioni del server'),
+    .setDescription('Shows server information'),
   cooldown: 10,
   isGlobal: false,
   requiredLevel: 1,
@@ -20,9 +20,9 @@ const command: Command = {
     if (!interaction.guildId) {
       const dmErrorEmbed = new EmbedBuilder()
         .setColor(Colors.Red)
-        .setTitle('⚠️ Comando non disponibile')
-        .setDescription('Questo comando può essere eseguito esclusivamente all\'interno dei server Discord.')
-        .setFooter({ text: 'Esegui questo comando in un server per vedere le informazioni.' })
+        .setTitle('⚠️ Command not available')
+        .setDescription('This command can only be executed within Discord servers.')
+        .setFooter({ text: 'Execute this command in a server to see the information.' })
         .setTimestamp();
 
       await interaction.reply({ embeds: [dmErrorEmbed], ephemeral: true });
@@ -44,19 +44,19 @@ const command: Command = {
         iconURL: guild?.iconURL()!,
       })
       .setThumbnail(guild?.iconURL()!)
-      .setTitle('Informazioni del Server');
+      .setTitle('Server Information');
     embed.addFields(
       {
-        name: 'Owner Server',
+        name: 'Server Owner',
         value: guild?.ownerId ? `<@${guild.ownerId}>` : 'N/A',
         inline: true,
       },
       {
-        name: 'Membri',
+        name: 'Members',
         value: guild?.memberCount != null ? guild.memberCount.toString() : 'N/A',
         inline: true,
       },
-      { name: 'Ruoli', value: guild?.roles.cache.size.toString() ?? 'N/A', inline: true },
+      { name: 'Roles', value: guild?.roles.cache.size.toString() ?? 'N/A', inline: true },
       {
         name: 'Server Boosts',
         value: guild?.premiumSubscriptionCount
@@ -65,13 +65,13 @@ const command: Command = {
         inline: true,
       },
       {
-        name: 'Data di creazione',
+        name: 'Creation Date',
         value: guild?.createdAt ? guild.createdAt.toDateString() : 'N/A',
         inline: true,
       }
     );
     embed.setTimestamp();
-    embed.setFooter({ text: `ID Guild: ${guildId}` });
+    embed.setFooter({ text: `Guild ID: ${guildId}` });
     
     await interaction.reply({ embeds: [embed] });
   },

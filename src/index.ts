@@ -10,7 +10,7 @@ import { loadCommands, deployCommands } from './handlers/commandHandler';
 import { initializeDatabaseFromConfig } from './services/database'
 import type { Command } from './types/command';
 
-// Estendi il tipo Client per includere la collection dei comandi
+// Extend the Client type to include the commands collection
 declare module 'discord.js' {
   export interface Client {
     commands: Collection<string, Command>;
@@ -40,7 +40,7 @@ class DiscordBot {
   private client: Client;
 
   constructor() {
-    // Inizializza il client con gli intent necessari
+    // Initialize the client with necessary intents
     this.client = new Client({
       intents: [
         GatewayIntentBits.Guilds,
@@ -51,7 +51,7 @@ class DiscordBot {
       ],
     });
 
-    // Inizializza le collections
+    // Initialize collections
     this.client.commands = new Collection();
     this.client.cooldowns = new Collection();
 
@@ -60,47 +60,47 @@ class DiscordBot {
 
   private async initialize(): Promise<void> {
     try {
-      logger.banner('Discord Bot - Avvio');
-      logger.info(chalk.cyan('🚀 Inizializzazione del bot...'));
+      logger.banner('Discord Bot - Starting');
+      logger.info(chalk.cyan('🚀 Initializing bot...'));
 
-      // Carica i comandi
+      // Load commands
       await loadCommands(this.client);
-      logger.success('✅ Comandi caricati con successo');
+      logger.success('✅ Commands loaded successfully');
 
-      // Carica gli eventi
+      // Load events
       await loadEvents(this.client);
-      logger.success('✅ Eventi caricati con successo');
+      logger.success('✅ Events loaded successfully');
 
-      // Inizializza il database
+      // Initialize database
       await initializeDatabaseFromConfig();
-      logger.success('✅ Database inizializzato con successo');
+      logger.success('✅ Database initialized successfully');
 
-      // Login del bot
+      // Bot login
       await this.client.login(discordConfig.DISCORD_TOKEN);
-      logger.success('✅ Bot loggato con successo');
+      logger.success('✅ Bot logged in successfully');
 
-      // Deploy dei comandi slash dopo il login
+      // Deploy slash commands after login
       await deployCommands(this.client);
-      logger.success('✅ Comandi slash deployati con successo');
+      logger.success('✅ Slash commands deployed successfully');
 
-      logger.info(chalk.green('Il bot è pronto e in esecuzione.'));
+      logger.info(chalk.green('The bot is ready and running.'));
     } catch (error) {
-      logger.error('❌ Errore durante l\'inizializzazione:', error);
+      logger.error('❌ Error during initialization:', error);
       process.exit(1);
     }
   }
 
-  // Gestione graceful shutdown
+  // Handle graceful shutdown
   private setupGracefulShutdown(): void {
     const shutdown = async (signal: string): Promise<void> => {
-      logger.warn(`\n📴 Ricevuto segnale ${signal}. Spegnimento del bot...`);
+      logger.warn(`\n📴 Received signal ${signal}. Shutting down bot...`);
 
       try {
         this.client.destroy();
-        logger.success('✅ Bot spento correttamente');
+        logger.success('✅ Bot shut down correctly');
         process.exit(0);
       } catch (error) {
-        logger.error('❌ Errore durante lo spegnimento:', error);
+        logger.error('❌ Error during shutdown:', error);
         process.exit(1);
       }
     };
@@ -114,11 +114,11 @@ class DiscordBot {
   }
 }
 
-// Avvia il bot
+// Start the bot
 const bot = new DiscordBot();
 bot.start();
 
-// Gestione errori non catturati
+// Handle uncaught errors
 process.on('unhandledRejection', (reason, promise) => {
   logger.error('❌ Unhandled Rejection at:', promise, 'reason:', reason);
 });

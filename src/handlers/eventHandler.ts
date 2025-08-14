@@ -5,15 +5,15 @@ import { join } from 'path';
 import type { Event } from '../types/event';
 
 /**
- * Carica ricorsivamente tutti gli eventi dalla cartella events/
- * @param client - Il client Discord
+ * Recursively loads all events from the events/ folder
+ * @param client - The Discord client
  */
 export async function loadEvents(client: Client): Promise<void> {
   const eventsPath = join(__dirname, '..', 'events');
 
   try {
     await loadEventsFromDirectory(client, eventsPath);
-    console.log(chalk.green('[EVENTS] SUCCESS ✅ Tutti gli eventi caricati con successo'));
+    console.log(chalk.green('[EVENTS] SUCCESS ✅ All events loaded successfully'));
   } catch (error) {
     console.error(chalk.red('[EVENTS] ERROR ❌'), error);
     throw error;
@@ -21,9 +21,9 @@ export async function loadEvents(client: Client): Promise<void> {
 }
 
 /**
- * Carica gli eventi da una directory specifica (ricorsivamente)
- * @param client - Il client Discord
- * @param dirPath - Il percorso della directory
+ * Loads events from a specific directory (recursively)
+ * @param client - The Discord client
+ * @param dirPath - The directory path
  */
 async function loadEventsFromDirectory(client: Client, dirPath: string): Promise<void> {
   const files = readdirSync(dirPath);
@@ -33,18 +33,18 @@ async function loadEventsFromDirectory(client: Client, dirPath: string): Promise
     const stat = statSync(filePath);
 
     if (stat.isDirectory()) {
-      // Se è una directory, carica ricorsivamente
+      // If it's a directory, load recursively
       await loadEventsFromDirectory(client, filePath);
     } else if (file.endsWith('.ts') && !file.startsWith('_')) {
-      // Se è un file TypeScript e non inizia con _, caricalo
+      // If it's a TypeScript file and doesn't start with _, load it
       try {
-        // Usa require invece di import dinamico per compatibilità
+        // Use require instead of dynamic import for compatibility
         delete require.cache[require.resolve(filePath)];
         const eventModule = require(filePath);
         const event: Event = eventModule.default || eventModule;
 
         if (!event.name || typeof event.execute !== 'function') {
-          console.warn(chalk.yellow(`[EVENTS] WARNING ⚠️  Evento ${file} non ha una struttura valida`));
+          console.warn(chalk.yellow(`[EVENTS] WARNING ⚠️  Event ${file} doesn't have a valid structure`));
           continue;
         }
 
@@ -56,7 +56,7 @@ async function loadEventsFromDirectory(client: Client, dirPath: string): Promise
 
         console.log(chalk.white(`[EVENTS] LOADED 📝 ${event.name} (${file})`));
       } catch (error) {
-        console.error(chalk.red(`[EVENTS] ERROR ❌ Errore caricamento ${file}:`), error);
+        console.error(chalk.red(`[EVENTS] ERROR ❌ Loading error ${file}:`), error);
       }
     }
   }

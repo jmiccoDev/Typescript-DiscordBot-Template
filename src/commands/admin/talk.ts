@@ -9,25 +9,25 @@ import {
 import type { Command } from '../../types/command';
 
 /**
- * Comando per far parlare il bot in un canale specifico
- * Permette agli amministratori di inviare messaggi attraverso il bot
+ * Command to make the bot speak in a specific channel
+ * Allows administrators to send messages through the bot
  */
 const command: Command = {
   data: new SlashCommandBuilder()
     .setName('talk')
-    .setDescription('Fai parlare al bot!')
+    .setDescription('Make the bot talk!')
     .addStringOption(
       option =>
         option
           .setName('text')
-          .setDescription('Il testo da mandare')
+          .setDescription('The text to send')
           .setRequired(true)
-          .setMaxLength(2000) // Limite Discord per i messaggi
+          .setMaxLength(2000) // Discord limit for messages
     )
     .addChannelOption(option =>
       option
         .setName('channel')
-        .setDescription('Canale in cui mandare il messaggio (default: canale corrente)')
+        .setDescription('Channel to send the message to (default: current channel)')
         .addChannelTypes(ChannelType.GuildText, ChannelType.GuildAnnouncement)
         .setRequired(false)
     ),
@@ -37,47 +37,47 @@ const command: Command = {
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
     try {
-      // Ottieni i parametri
+      // Get parameters
       const text = interaction.options.getString('text', true);
       const targetChannel = interaction.options.getChannel('channel') as TextChannel | null;
       const channel = targetChannel || (interaction.channel as TextChannel);
 
-      // Validazioni essenziali
+      // Essential validations
       if (!channel || !('send' in channel)) {
         await interaction.reply({
-          content: '❌ **Errore:** Il canale specificato non è valido.',
+          content: '❌ **Error:** The specified channel is not valid.',
           ephemeral: true,
         });
         return;
       }
 
-      // Verifica permessi bot
+      // Check bot permissions
       if (!channel.permissionsFor(interaction.client.user!)?.has(['SendMessages', 'ViewChannel'])) {
         await interaction.reply({
-          content: `❌ **Errore:** Non ho i permessi per scrivere in ${channel}.`,
+          content: `❌ **Error:** I don't have permissions to write in ${channel}.`,
           ephemeral: true,
         });
         return;
       }
 
-      // Invia il messaggio e ottieni la reference
+      // Send the message and get the reference
       const sentMessage = await channel.send(text);
 
-      // Crea embed di conferma con link al messaggio
+      // Create confirmation embed with message link
       const confirmEmbed = new EmbedBuilder()
         .setColor(Colors.Green)
-        .setTitle('✅ Messaggio Inviato')
-        .setDescription(`Il messaggio è stato inviato con successo in ${channel}`)
+        .setTitle('✅ Message Sent')
+        .setDescription(`The message was sent successfully to ${channel}`)
         .addFields([
           {
-            name: '🔗 Link al messaggio',
-            value: `[Clicca qui per visualizzare](${sentMessage.url})`,
+            name: '🔗 Message link',
+            value: `[Click here to view](${sentMessage.url})`,
             inline: false,
           },
         ])
         .setTimestamp()
         .setFooter({
-          text: `Inviato da ${interaction.user.tag}`,
+          text: `Sent by ${interaction.user.tag}`,
           iconURL: interaction.user.displayAvatarURL(),
         });
 
@@ -87,12 +87,12 @@ const command: Command = {
       });
 
     } catch (error) {
-      console.error('Errore nel comando talk:', error);
+      console.error('Error in talk command:', error);
 
       const errorEmbed = new EmbedBuilder()
         .setColor(Colors.Red)
-        .setTitle('💥 Errore')
-        .setDescription('Si è verificato un errore durante l\'invio del messaggio.');
+        .setTitle('💥 Error')
+        .setDescription('An error occurred while sending the message.');
 
       if (interaction.replied || interaction.deferred) {
         await interaction.editReply({ embeds: [errorEmbed] });

@@ -3,15 +3,15 @@
  * Author: jmiccoDev
  * Date: 2025-07-23
  * 
- * Modulo completo per la gestione del database MySQL con mysql2
- * Supporta pool di connessioni, transazioni e operazioni CRUD ottimizzate
+ * Complete module for MySQL database management with mysql2
+ * Supports connection pools, transactions and optimized CRUD operations
  */
 
 import chalk from 'chalk';
 import mysql, { Pool, PoolConnection, RowDataPacket, ResultSetHeader, PoolOptions } from 'mysql2/promise';
 import { databaseConfig } from '../config/database-config';
 
-// Tipi per le tabelle del database
+// Types for database tables
 export interface User {
     id: number;
     discord_id: string;
@@ -55,7 +55,7 @@ export interface Cittadinanza {
     additional_notes?: string;
 }
 
-// Configurazione del database
+// Database configuration
 export interface DatabaseConfig {
     host: string;
     port: number;
@@ -69,10 +69,10 @@ export interface DatabaseConfig {
     charset?: string;
 }
 
-// Tipo per i risultati delle query
+// Type for query results
 export type QueryResult<T = any> = T extends RowDataPacket ? T[] : T;
 
-// Classe principale del Database Manager
+// Main Database Manager class
 export class DatabaseManager {
     private pool: Pool;
     private config: DatabaseConfig;
@@ -113,7 +113,7 @@ export class DatabaseManager {
 
         // Event listeners per monitoring del pool
         this.pool.on('connection', (connection) => {
-            console.log(chalk.blue(`[DATABASE] CONNECTED 🔗 Nuova connessione: ${connection.threadId}`));
+            console.log(chalk.blue(`[DATABASE] CONNECTED 🔗 New connection: ${connection.threadId}`));
         });
     }
 
@@ -124,14 +124,14 @@ export class DatabaseManager {
         let connection: PoolConnection | undefined;
         
         try {
-            console.log(chalk.blue('[DATABASE] TESTING 🔍 Connessione in corso...'));
+            console.log(chalk.blue('[DATABASE] TESTING 🔍 Connection in progress...'));
             connection = await this.pool.getConnection();
             
             await connection.execute('SELECT 1 as test');
-            console.log(chalk.green('[DATABASE] SUCCESS ✅ Test connessione riuscito'));
+            console.log(chalk.green('[DATABASE] SUCCESS ✅ Connection test successful'));
             return true;
         } catch (error) {
-            console.error(chalk.red('[DATABASE] ERROR ❌ Test connessione fallito:'), error);
+            console.error(chalk.red('[DATABASE] ERROR ❌ Connection test failed:'), error);
             return false;
         } finally {
             if (connection) {
@@ -156,11 +156,11 @@ export class DatabaseManager {
             const [rows] = await connection.execute<T[]>(sql, params);
             const endTime = Date.now();
             
-            console.log(`[DATABASE] Query eseguita in ${endTime - startTime}ms`);
+            console.log(`[DATABASE] Query executed in ${endTime - startTime}ms`);
             
             return rows;
         } catch (error) {
-            console.error('[DATABASE] Errore durante l\'esecuzione della query:', error);
+            console.error('[DATABASE] Error during query execution:', error);
             throw this.handleDatabaseError(error);
         } finally {
             if (connection) {
@@ -185,11 +185,11 @@ export class DatabaseManager {
             const [result] = await connection.execute<ResultSetHeader>(sql, params);
             const endTime = Date.now();
             
-            console.log(`[DATABASE] Comando eseguito in ${endTime - startTime}ms`);
+            console.log(`[DATABASE] Command executed in ${endTime - startTime}ms`);
             
             return result;
         } catch (error) {
-            console.error('[DATABASE] Errore durante l\'esecuzione del comando:', error);
+            console.error('[DATABASE] Error during command execution:', error);
             throw this.handleDatabaseError(error);
         } finally {
             if (connection) {
@@ -487,7 +487,7 @@ export class DatabaseManager {
     async close(): Promise<void> {
         try {
             await this.pool.end();
-            console.log('[DATABASE] Pool di connessioni chiuso');
+            console.log('[DATABASE] Connection pool closed');
         } catch (error) {
             console.error('[DATABASE] Errore durante la chiusura del pool:', error);
             throw error;
@@ -529,7 +529,7 @@ function validateDatabaseConfig(config: DatabaseConfig): boolean {
         throw new Error('[DATABASE] connectionLimit deve essere almeno 1');
     }
     
-    console.log(chalk.green('[DATABASE] VALIDATED ✅ Configurazione validata con successo'));
+    console.log(chalk.green('[DATABASE] VALIDATED ✅ Configuration validated successfully'));
     return true;
 }
 
@@ -556,7 +556,7 @@ export async function initializeDatabase(config?: DatabaseConfig): Promise<Datab
         throw new Error('[DATABASE] Impossibile stabilire una connessione al database durante l\'inizializzazione');
     }
     
-    console.log(chalk.green('[DATABASE] INITIALIZED ✅ Database manager inizializzato con successo'));
+    console.log(chalk.green('[DATABASE] INITIALIZED ✅ Database manager initialized successfully'));
     return dbInstance;
 }
 

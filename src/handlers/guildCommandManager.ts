@@ -3,30 +3,30 @@ import { discordConfig } from '../config/discord-config';
 import type { Command } from '../types/command';
 
 /**
- * Utility per re-deployare i comandi in un guild specifico
- * Utile per debug o aggiornamenti manuali
- * @param client - Il client Discord
- * @param guildId - L'ID del guild dove re-deployare i comandi
+ * Utility to re-deploy commands in a specific guild
+ * Useful for debugging or manual updates
+ * @param client - The Discord client
+ * @param guildId - The guild ID where to re-deploy commands
  */
 export async function redeployCommandsForGuild(client: Client, guildId: string): Promise<void> {
-  console.log(`🔄 Re-deploy dei comandi per guild ${guildId}...`);
+  console.log(`🔄 Re-deploying commands for guild ${guildId}...`);
   
   const commandsToDeploy: Command[] = [];
   
   client.commands.forEach(command => {
-    // Escludi i comandi globali
+    // Exclude global commands
     if (command.isGlobal !== false) {
       return;
     }
     
-    // Includi comandi che devono essere deployati in questo guild
+    // Include commands that should be deployed in this guild
     if (shouldDeployCommandInGuild(command, guildId)) {
       commandsToDeploy.push(command);
     }
   });
 
   if (commandsToDeploy.length === 0) {
-    console.log(`📝 Nessun comando guild-specific da re-deployare per guild ${guildId}`);
+    console.log(`📝 No guild-specific commands to re-deploy for guild ${guildId}`);
     return;
   }
 
@@ -40,22 +40,22 @@ export async function redeployCommandsForGuild(client: Client, guildId: string):
       }
     )) as any[];
 
-    console.log(`✅ ${guildData.length} comandi re-deployati per guild ${guildId}:`);
+    console.log(`✅ ${guildData.length} commands re-deployed for guild ${guildId}:`);
     guildData.forEach((command: any) => {
       console.log(`   - /${command.name}: ${command.description}`);
     });
   } catch (error) {
-    console.error(`❌ Errore nel re-deploy dei comandi per guild ${guildId}:`, error);
+    console.error(`❌ Error re-deploying commands for guild ${guildId}:`, error);
     throw error;
   }
 }
 
 /**
- * Utility per re-deployare i comandi in tutti i guild dove il bot è presente
- * @param client - Il client Discord
+ * Utility to re-deploy commands in all guilds where the bot is present
+ * @param client - The Discord client
  */
 export async function redeployCommandsForAllGuilds(client: Client): Promise<void> {
-  console.log(`🌐 Re-deploy dei comandi per tutti i ${client.guilds.cache.size} guild...`);
+  console.log(`🌐 Re-deploying commands for all ${client.guilds.cache.size} guilds...`);
   
   const deployPromises: Promise<void>[] = [];
   
@@ -65,33 +65,33 @@ export async function redeployCommandsForAllGuilds(client: Client): Promise<void
   
   try {
     await Promise.all(deployPromises);
-    console.log(`✅ Re-deploy completato per tutti i guild!`);
+    console.log(`✅ Re-deployment completed for all guilds!`);
   } catch (error) {
-    console.error(`❌ Errore durante il re-deploy per tutti i guild:`, error);
+    console.error(`❌ Error during re-deployment for all guilds:`, error);
     throw error;
   }
 }
 
 /**
- * Determina se un comando deve essere deployato in un guild specifico
- * @param command - Il comando da verificare
- * @param guildId - L'ID del guild
- * @returns true se il comando deve essere deployato
+ * Determines if a command should be deployed in a specific guild
+ * @param command - The command to check
+ * @param guildId - The guild ID
+ * @returns true if the command should be deployed
  */
 function shouldDeployCommandInGuild(command: Command, guildId: string): boolean {
-  // Se il comando è globale, non deployarlo qui
+  // If the command is global, don't deploy it here
   if (command.isGlobal !== false) {
     return false;
   }
 
-  // Se ha guildsId specificati
+  // If it has specified guildsId
   if (command.guildsId && command.guildsId.length > 0) {
-    // Se contiene "-1", deve essere deployato in tutti i guild
+    // If it contains "-1", it should be deployed in all guilds
     if (command.guildsId.includes("-1")) {
       return true;
     }
     
-    // Se contiene l'ID del guild specifico
+    // If it contains the specific guild ID
     if (command.guildsId.includes(guildId)) {
       return true;
     }
@@ -99,7 +99,7 @@ function shouldDeployCommandInGuild(command: Command, guildId: string): boolean 
     return false;
   }
 
-  // Se non ha guildsId ma non è globale, usa il DEFAULT_GUILD_ID
+  // If it doesn't have guildsId but is not global, use DEFAULT_GUILD_ID
   if (discordConfig.DEFAULT_GUILD_ID && guildId === discordConfig.DEFAULT_GUILD_ID) {
     return true;
   }

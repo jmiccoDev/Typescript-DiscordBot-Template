@@ -2,31 +2,23 @@ import chalk from 'chalk';
 import { Events, ActivityType, type Client } from 'discord.js';
 import { handleEventError } from '../../tools/errorHandler';
 
-// Lista delle presence personalizzabili - Modifica qui per aggiungere/rimuovere stati
+// List of customizable presences - uses placeholder template:
+// {users}, {guilds}, {commands}, {prefix}, {version}, {uptime}, {invite}, {owner}
 const PRESENCE_LIST: Array<{
   name: string;
   type: ActivityType;
 }> = [
-  {
-    name: '+7.000 Utenti',
-    type: ActivityType.Watching,
-  },
-  {
-    name: 'Moderazione In-Game',
-    type: ActivityType.Competing,
-  },
-  {
-    name: 'Sviluppato dalla Direzione di Naples, Italy',
-    type: ActivityType.Streaming,
-  },
-  {
-    name: 'discord.gg/naples',
-    type: ActivityType.Listening,
-  }
-
+  { name: '{users} users', type: ActivityType.Watching },
+  { name: 'Serving {guilds} servers', type: ActivityType.Watching },
+  { name: '{prefix}help · {commands} commands', type: ActivityType.Listening },
+  { name: 'Version {version}', type: ActivityType.Playing },
+  { name: 'Online for {uptime}', type: ActivityType.Competing },
+  { name: 'Join: {invite}', type: ActivityType.Streaming },
+  { name: 'Developed by {owner}', type: ActivityType.Playing },
+  { name: 'Active moderation', type: ActivityType.Competing },
 ] as const;
 
-// Intervallo di aggiornamento in millisecondi (60 secondi)
+// Update interval in milliseconds (60 seconds)
 const PRESENCE_UPDATE_INTERVAL = 60 * 1000;
 
 export default {
@@ -35,27 +27,27 @@ export default {
   async execute(client: Client): Promise<void> {
     try {
       if (!client.user) {
-        throw new Error('Client user non disponibile');
+        throw new Error('Client user not available');
       }
 
       console.log(chalk.green(`[BOT] ONLINE ✅ ${client.user.tag}`));
-      console.log(chalk.blue(`[BOT] INFO 📊 Connesso a ${client.guilds.cache.size} server`));
-      console.log(chalk.blue(`[BOT] INFO 👥 Servendo ${client.users.cache.size} utenti`));
+      console.log(chalk.blue(`[BOT] INFO 📊 Connected to ${client.guilds.cache.size} servers`));
+      console.log(chalk.blue(`[BOT] INFO 👥 Serving ${client.users.cache.size} users`));
       console.log(chalk.blue(`[BOT] INFO 🤖 Bot ID: ${client.user.id}`));
-      console.log(chalk.blue(`[BOT] INFO 📝 Comandi caricati: ${client.commands.size}`));
+      console.log(chalk.blue(`[BOT] INFO 📝 Commands loaded: ${client.commands.size}`));
 
-      // Log delle informazioni del bot
+      // Log bot information
       const guilds = client.guilds.cache.map(
-        guild => `${guild.name} (ID: ${guild.id}, ${guild.memberCount} membri)`
+        guild => `${guild.name} (ID: ${guild.id}, ${guild.memberCount} members)`
       );
       if (guilds.length > 0) {
-        console.log(chalk.blue('[BOT] SERVERS 🏠 Server connessi:'));
+        console.log(chalk.blue('[BOT] SERVERS 🏠 Connected servers:'));
         guilds.forEach(guild => console.log(chalk.white(`   - ${guild}`)));
       }
       
-      console.log(chalk.blue('[BOT] READY 🔄 Pronto per gestire nuovi server automaticamente!'));
+      console.log(chalk.blue('[BOT] READY 🔄 Ready to handle new servers automatically!'));
 
-      // Imposta la prima presence e avvia il sistema di rotazione
+      // Set the first presence and start the rotation system
       setupPresenceRotation(client);
 
     } catch (error) {
@@ -68,24 +60,24 @@ export default {
 };
 
 /**
- * Configura il sistema di rotazione delle presence
- * @param client - Il client Discord
+ * Configures the presence rotation system
+ * @param client - The Discord client
  */
 function setupPresenceRotation(client: Client): void {
   let currentIndex = 0;
 
-  // Funzione per aggiornare la presence
+  // Function to update presence
   const updatePresence = (): void => {
     try {
-      // Verifica che ci siano presence disponibili
+      // Verify that presences are available
       if (PRESENCE_LIST.length === 0) {
-        console.warn('⚠️ Nessuna presence configurata nella lista');
+        console.warn('⚠️ No presence configured in the list');
         return;
       }
 
       const presence = PRESENCE_LIST[currentIndex];
       if (!presence) {
-        console.error('❌ Presence non trovata all\'indice:', currentIndex);
+        console.error('❌ Presence not found at index:', currentIndex);
         return;
       }
       
@@ -97,18 +89,18 @@ function setupPresenceRotation(client: Client): void {
         status: 'online',
       });
       
-      // Passa alla prossima presence (con loop)
+      // Move to the next presence (with loop)
       currentIndex = (currentIndex + 1) % PRESENCE_LIST.length;
     } catch (error) {
-      console.error('❌ Errore durante l\'aggiornamento della presence:', error);
+      console.error('❌ Error during presence update:', error);
     }
   };
 
-  // Imposta la prima presence immediatamente
+  // Set the first presence immediately
   updatePresence();
 
-  // Avvia l'intervallo di aggiornamento
+  // Start the update interval
   setInterval(updatePresence, PRESENCE_UPDATE_INTERVAL);
   
-  console.log(chalk.magenta(`[PRESENCE] STARTED 🔄 Sistema rotazione avviato (ogni ${PRESENCE_UPDATE_INTERVAL / 1000}s)`));
+  console.log(chalk.magenta(`[PRESENCE] STARTED 🔄 Rotation system started (every ${PRESENCE_UPDATE_INTERVAL / 1000}s)`));
 }

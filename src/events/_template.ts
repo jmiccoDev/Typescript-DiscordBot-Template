@@ -2,41 +2,41 @@ import { Events } from 'discord.js';
 import type { Event } from '../types/event';
 
 /**
- * Template per creare nuovi eventi
+ * Template for creating new events
  *
- * ISTRUZIONI:
- * 1. Copia questo file e rinominalo con il nome dell'evento
- * 2. Modifica la proprietà 'name' con l'evento Discord appropriato
- * 3. Implementa la logica nell'execute function
- * 4. Se l'evento deve essere eseguito solo una volta, imposta 'once: true'
- * 5. Se l'evento richiede permessi specifici, imposta 'requiredLevel' (opzionale)
+ * INSTRUCTIONS:
+ * 1. Copy this file and rename it with the event name
+ * 2. Modify the 'name' property with the appropriate Discord event
+ * 3. Implement the logic in the execute function
+ * 4. If the event should be executed only once, set 'once: true'
+ * 5. If the event requires specific permissions, set 'requiredLevel' (optional)
  *
- * EVENTI COMUNI:
- * - Events.ClientReady: quando il bot è pronto
- * - Events.InteractionCreate: per slash commands e interazioni
- * - Events.MessageCreate: per messaggi
- * - Events.GuildMemberAdd: quando un utente entra nel server
- * - Events.GuildMemberRemove: quando un utente esce dal server
+ * COMMON EVENTS:
+ * - Events.ClientReady: when the bot is ready
+ * - Events.InteractionCreate: for slash commands and interactions
+ * - Events.MessageCreate: for messages
+ * - Events.GuildMemberAdd: when a user joins the server
+ * - Events.GuildMemberRemove: when a user leaves the server
  *
- * LIVELLI DI PERMESSO:
- * - 1: USER (utente standard)
- * - 2: MODERATOR (moderatore)
- * - 3: ADMIN (amministratore)
- * - 4: OWNER (proprietario)
+ * PERMISSION LEVELS:
+ * - 1: USER (standard user)
+ * - 2: MODERATOR (moderator)
+ * - 3: ADMIN (administrator)
+ * - 4: OWNER (owner)
  */
 
 const event: Event = {
-  name: Events.ClientReady, // Cambia con l'evento appropriato
-  once: false, // true se l'evento deve essere eseguito solo una volta
-  // requiredLevel: 2, // Decommentare e impostare il livello di permesso richiesto (opzionale)
+  name: Events.ClientReady, // Change with the appropriate event
+  once: false, // true if the event should be executed only once
+  // requiredLevel: 2, // Uncomment and set the required permission level (optional)
   async execute(..._args: any[]): Promise<void> {
-    // Implementa qui la logica dell'evento
-    console.log('Template evento eseguito!');
+    // Implement the event logic here
+    console.log('Template event executed!');
 
-    // Esempio di accesso ai parametri dell'evento:
-    // const [client] = args; // per Events.ClientReady
-    // const [interaction] = args; // per Events.InteractionCreate
-    // const [message] = args; // per Events.MessageCreate
+    // Example of accessing event parameters:
+    // const [client] = args; // for Events.ClientReady
+    // const [interaction] = args; // for Events.InteractionCreate
+    // const [message] = args; // for Events.MessageCreate
   },
 };
 

@@ -9,11 +9,11 @@ import type { Command } from '../../types/command';
 const command: Command = {
   data: new SlashCommandBuilder()
     .setName('whois')
-    .setDescription('Mostra le informazioni di un utente Discord')
+    .setDescription('Shows information about a Discord user')
     .addUserOption(option =>
       option
         .setName('user')
-        .setDescription("L'utente Discord di cui mostrare le informazioni")
+        .setDescription("The Discord user to show information about")
         .setRequired(true)
     ),
   cooldown: 10,
@@ -27,27 +27,27 @@ const command: Command = {
     const embed = new EmbedBuilder()
       .setColor(Colors.DarkButNotBlack)
       .setAuthor({ name: `@${user.username}`, iconURL: user.displayAvatarURL() })
-      .setTitle(`Informazioni Utente`)
+      .setTitle(`User Information`)
       .setThumbnail(user.displayAvatarURL({ size: 128, extension: 'png' }))
       .addFields(
-        { name: 'ID Utente', value: user.id.toString(), inline: false },
+        { name: 'User ID', value: user.id.toString(), inline: false },
         {
-          name: 'Data di Creazione',
-          value: user.createdAt.toLocaleDateString('it-IT'),
+          name: 'Creation Date',
+          value: user.createdAt.toLocaleDateString('en-US'),
           inline: true,
         },
         {
-          name: 'Data di ingresso',
+          name: 'Join Date',
           value:
             'joinedAt' in (interaction.member ?? {}) && (interaction.member as any).joinedAt
-              ? (interaction.member as any).joinedAt.toLocaleDateString('it-IT')
-              : 'Non disponibile',
+              ? (interaction.member as any).joinedAt.toLocaleDateString('en-US')
+              : 'Not available',
           inline: true,
         }
       )
       .setTimestamp()
       .setFooter({
-        text: `Richiesto da ${interaction.user.tag}`,
+        text: `Requested by ${interaction.user.tag}`,
         iconURL: interaction.user.displayAvatarURL(),
       });
 

@@ -11,16 +11,16 @@ export interface ErrorInfo {
 }
 
 /**
- * Gestisce e logga gli errori con embed dettagliati
- * @param client - Client Discord
- * @param error - L'errore da loggare
- * @param info - Informazioni aggiuntive sull'errore
+ * Handles and logs errors with detailed embeds
+ * @param client - Discord Client
+ * @param error - The error to log
+ * @param info - Additional information about the error
  */
 export async function handleError(client: Client, error: any, info: ErrorInfo): Promise<void> {
-  // Log nella console
-  console.error(`❌ Errore in ${info.eventName || info.commandName || 'Unknown'}:`, error);
+  // Console log
+  console.error(`❌ Error in ${info.eventName || info.commandName || 'Unknown'}:`, error);
 
-  // Se non c'è un canale di log configurato, ferma qui
+  // If there's no configured log channel, stop here
   const errorLogChannelId = getChannelId(CHANNEL_TYPES.ERROR_LOGS);
   if (!errorLogChannelId) return;
 
@@ -29,25 +29,25 @@ export async function handleError(client: Client, error: any, info: ErrorInfo): 
 
     if (!logChannel?.isTextBased()) return;
 
-    // Estrai informazioni dettagliate dall'errore
+    // Extract detailed information from the error
     const errorStack = error.stack || error.toString();
-    const errorMessage = error.message || 'Errore sconosciuto';
+    const errorMessage = error.message || 'Unknown error';
 
-    // Cerca informazioni su linea e colonna dall'stack trace
+    // Search for line and column information from stack trace
     const stackLines = errorStack.split('\n');
     const relevantLine =
       stackLines.find((line: string) => line.includes('.ts:')) || stackLines[1] || 'N/A';
 
-    // Estrai file, linea e colonna se disponibili
+    // Extract file, line and column if available
     const fileMatch = relevantLine.match(/([^/\\]+\.ts):(\d+):(\d+)/);
     const fileName = fileMatch ? fileMatch[1] : 'N/A';
     const lineNumber = fileMatch ? fileMatch[2] : 'N/A';
     const columnNumber = fileMatch ? fileMatch[3] : 'N/A';
 
-    // Determina il titolo dell'embed
+    // Determine embed title
     const title = info.commandName
-      ? `Errore Comando: /${info.commandName}`
-      : `Errore Evento: ${info.eventName || 'Unknown'}`;
+      ? `Command Error: /${info.commandName}`
+      : `Event Error: ${info.eventName || 'Unknown'}`;
 
     const errorEmbed = new EmbedBuilder()
       .setColor(Colors.Red)
@@ -60,9 +60,9 @@ export async function handleError(client: Client, error: any, info: ErrorInfo): 
       )
       .addFields(
         { name: 'File', value: fileName, inline: true },
-        { name: 'Linea:Colonna', value: `${lineNumber}:${columnNumber}`, inline: true },
+        { name: 'Line:Column', value: `${lineNumber}:${columnNumber}`, inline: true },
         { name: 'Timestamp', value: `<t:${Math.floor(Date.now() / 1000)}:F>`, inline: false },
-        { name: 'Tipo Errore', value: error.name || 'Error', inline: false },
+        { name: 'Error Type', value: error.name || 'Error', inline: false },
         { name: 'Node Version', value: process.version, inline: false }
       )
       .setTimestamp()
@@ -73,7 +73,7 @@ export async function handleError(client: Client, error: any, info: ErrorInfo): 
 
     if (info.userId) {
       errorEmbed.addFields({
-        name: 'Utente',
+        name: 'User',
         value: `<@${info.userId}> (${info.userId})`,
         inline: true,
       });
@@ -103,15 +103,15 @@ export async function handleError(client: Client, error: any, info: ErrorInfo): 
     if ('send' in logChannel && typeof logChannel.send === 'function') {
       await logChannel.send({ embeds: [errorEmbed] });
     } else {
-      console.error('❌ Il canale di log non supporta il metodo send.');
+      console.error('❌ The log channel does not support the send method.');
     }
   } catch (logError) {
-    console.error("❌ Errore nell'invio del log di errore:", logError);
+    console.error("❌ Error sending error log:", logError);
   }
 }
 
 /**
- * Wrapper per errori di comandi
+ * Wrapper for command errors
  */
 export async function handleCommandError(
   client: Client,
@@ -124,14 +124,14 @@ export async function handleCommandError(
   await handleError(client, error, {
     commandName,
     userId,
-    // Forziamo a stringa o lasciamo non definito, mai null o undefined
+    // Force to string or leave undefined, never null or undefined
     guildId: typeof guildId === 'string' ? guildId : '',
     guildName: guildName ?? '',
   });
 }
 
 /**
- * Wrapper per errori di eventi
+ * Wrapper for event errors
  */
 export async function handleEventError(
   client: Client,

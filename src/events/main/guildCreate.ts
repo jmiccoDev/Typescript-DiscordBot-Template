@@ -7,13 +7,13 @@ export default {
   name: Events.GuildCreate,
   async execute(guild: Guild): Promise<void> {
     try {
-      console.log(`🏠 Bot aggiunto al server: ${guild.name} (ID: ${guild.id})`);
-      console.log(`👥 Membri nel server: ${guild.memberCount}`);
+      console.log(`🏠 Bot added to server: ${guild.name} (ID: ${guild.id})`);
+      console.log(`👥 Members in server: ${guild.memberCount}`);
 
-      // Deploy dei comandi per il nuovo guild
+      // Deploy commands for the new guild
       await redeployCommandsForGuild(guild.client, guild.id);
 
-      console.log(`✅ Comandi deployati con successo per il server ${guild.name}`);
+      console.log(`✅ Commands deployed successfully for server ${guild.name}`);
     } catch (error) {
       await handleEventError(guild.client, error, 'GuildCreate', {
         'Guild Name': guild.name,

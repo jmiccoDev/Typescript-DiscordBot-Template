@@ -4,11 +4,11 @@ import { discordConfig } from '../../config/discord-config';
 import { channelsConfig, CHANNEL_TYPES } from '../../config/channels-config';
 
 /**
- * Evento per loggare tutte le interazioni del bot
- * Cattura qualsiasi tipo di interazione e la logga in un canale dedicato
+ * Event to log all bot interactions
+ * Captures any type of interaction and logs it to a dedicated channel
  */
 
-// Mappatura dei tipi di interazione con colori
+// Mapping of interaction types with colors
 const INTERACTION_COLORS = {
   [InteractionType.ApplicationCommand]: Colors.Blue,
   [InteractionType.MessageComponent]: Colors.Green,
@@ -54,14 +54,14 @@ const event: Event = {
       const logChannelId = channelsConfig[discordConfig.DEFAULT_GUILD_ID ?? '']?.[CHANNEL_TYPES.BOT_LOGS]?.id;
       
       if (!logChannelId) {
-        console.warn('Canale per i log delle interazioni non configurato');
+        console.warn('Channel for interaction logs not configured');
         return;
       }
 
       const logChannel = await interaction.client.channels.fetch(logChannelId).catch(() => null) as TextChannel | null;
       
       if (!logChannel) {
-        console.warn(`Impossibile trovare il canale per i log delle interazioni: ${logChannelId}`);
+        console.warn(`Unable to find channel for interaction logs: ${logChannelId}`);
         return;
       }
 
@@ -301,7 +301,7 @@ const event: Event = {
       await logChannel.send({ embeds: [embed] });
 
     } catch (error) {
-      console.error('Errore durante il logging dell\'interazione:', error);
+      console.error('Error during interaction logging:', error);
       // Non rethrow l'errore per evitare di interferire con il funzionamento normale del bot
     }
   },

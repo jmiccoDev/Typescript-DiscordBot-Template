@@ -11,12 +11,12 @@ export default {
     const command = interaction.client.commands.get(interaction.commandName);
 
     if (!command) {
-      console.error(`❌ Comando ${interaction.commandName} non trovato`);
+      console.error(`❌ Command ${interaction.commandName} not found`);
 
       const errorEmbed = new EmbedBuilder()
         .setColor(Colors.Red)
-        .setTitle('❌ Comando non trovato')
-        .setDescription(`Il comando \`/${interaction.commandName}\` non è stato trovato.`)
+        .setTitle('❌ Command not found')
+        .setDescription(`The command \`/${interaction.commandName}\` was not found.`)
         .setTimestamp();
 
       await interaction.reply({ embeds: [errorEmbed], flags: MessageFlags.Ephemeral });
@@ -24,8 +24,8 @@ export default {
     }
 
     try {
-      // Verifica dei permessi
-      // Se requiredLevel non è definito, qualsiasi utente può eseguire il comando senza controlli sui ruoli
+      // Permission check
+      // If requiredLevel is not defined, any user can execute the command without role checks
       if (command.requiredLevel !== undefined) {
         const hasPermission = await hasPermissionLevel(
           interaction.user.id,
@@ -35,7 +35,7 @@ export default {
         );
 
         if (!hasPermission) {
-          // Ottieni il livello dell'utente solo per mostrarlo nell'errore
+          // Get user level only to show it in the error
           const userLevel = await getUserPermissionLevel(
             interaction.user.id,
             interaction.guildId,
@@ -44,15 +44,15 @@ export default {
 
           const embed = new EmbedBuilder()
             .setColor(Colors.Red)
-            .setTitle('❌ Permessi insufficienti')
-            .setDescription('Non hai i permessi necessari per utilizzare questo comando.')
+            .setTitle('❌ Insufficient permissions')
+            .setDescription('You do not have the necessary permissions to use this command.')
             .addFields(
               {
-                name: 'Livello richiesto',
+                name: 'Required level',
                 value: getPermissionLevelName(command.requiredLevel),
                 inline: true,
               },
-              { name: 'Il tuo livello', value: getPermissionLevelName(userLevel), inline: true }
+              { name: 'Your level', value: getPermissionLevelName(userLevel), inline: true }
             )
             .setTimestamp();
 
@@ -60,9 +60,9 @@ export default {
           return;
         }
       }
-      // Se arriviamo qui, l'utente ha i permessi necessari o il comando non richiede permessi specifici
+      // If we get here, the user has the necessary permissions or the command doesn't require specific permissions
 
-      // Gestione cooldown
+      // Cooldown handling
       if (command.cooldown) {
         const cooldownResult = handleCooldown(
           interaction.user.id,
@@ -73,9 +73,9 @@ export default {
         if (!cooldownResult.canExecute) {
           const embed = new EmbedBuilder()
             .setColor(Colors.Orange)
-            .setTitle('⏰ Cooldown attivo')
+            .setTitle('⏰ Cooldown active')
             .setDescription(
-              `Devi aspettare ancora ${cooldownResult.timeLeft?.toFixed(1)} secondi prima di utilizzare questo comando.`
+              `You must wait ${cooldownResult.timeLeft?.toFixed(1)} more seconds before using this command.`
             )
             .setTimestamp();
 
@@ -84,21 +84,21 @@ export default {
         }
       }
 
-      // Esegui il comando
+      // Execute the command
       await command.execute(interaction);
 
-      // Log del comando eseguito
+      // Log the executed command
       console.log(
-        `📝 Comando /${interaction.commandName} eseguito da ${interaction.user.tag} in ${interaction.guild?.name || 'DM'}`
+        `📝 Command /${interaction.commandName} executed by ${interaction.user.tag} in ${interaction.guild?.name || 'DM'}`
       );
     } catch (error) {
-      console.error(`❌ Errore nell'esecuzione del comando ${interaction.commandName}:`, error);
+      console.error(`❌ Error executing command ${interaction.commandName}:`, error);
 
-      // Invia messaggio di errore all'utente
+      // Send error message to user
       const errorEmbed = new EmbedBuilder()
         .setColor(Colors.Red)
-        .setTitle("❌ Errore nell'esecuzione")
-        .setDescription("Si è verificato un errore durante l'esecuzione del comando.")
+        .setTitle("❌ Execution error")
+        .setDescription("An error occurred while executing the command.")
         .setTimestamp();
 
       try {
@@ -108,10 +108,10 @@ export default {
           await interaction.reply({ embeds: [errorEmbed], flags: MessageFlags.Ephemeral });
         }
       } catch (replyError) {
-        console.error("❌ Errore nell'invio della risposta di errore:", replyError);
+        console.error("❌ Error sending error response:", replyError);
       }
 
-      // Log dell'errore dettagliato nel canale
+      // Detailed error log in the channel
       await handleCommandError(
         interaction.client,
         error,
