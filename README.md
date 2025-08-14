@@ -64,9 +64,10 @@ Typescript-DiscordBot-Template/
 ├── src/
 │   ├── commands/        # Command files
 │   ├── events/          # Event handlers
-│   ├── database/        # MySQL connection and queries
-│   ├── utils/           # Helper functions
 │   ├── config/          # Configurations (.env loading, constants)
+│   ├── services/        # Services Modules (Database MySQL Module)
+│   ├── tools/           # Tools functions (Cooldown, Permission Handler, Error Handler)
+│   ├── types/           # Interfaces for Commands & Events
 │   └── index.ts         # Bot entry point
 │
 ├── .env.example         # Environment variables template
@@ -109,14 +110,6 @@ npm run build
 # Start production bot
 npm start
 ```
-
----
-
-### Testing
-```sh
-npm test
-```
-
 ---
 
 ## 📜 License
