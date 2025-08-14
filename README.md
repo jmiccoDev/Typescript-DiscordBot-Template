@@ -1,16 +1,14 @@
-# TypeScript Discord Bot Template
+<div align="center">
+
+# **TYPESCRIPT-DISCORDBOT-TEMPLATE**
 
 ![Last Commit](https://img.shields.io/github/last-commit/jmiccoDev/Typescript-DiscordBot-Template)
 ![TypeScript](https://img.shields.io/badge/TypeScript-100%25-blue)
 ![Languages](https://img.shields.io/github/languages/count/jmiccoDev/Typescript-DiscordBot-Template)
 ![License](https://img.shields.io/github/license/jmiccoDev/Typescript-DiscordBot-Template)
 
-> **A robust, scalable and maintainable Discord bot template built with TypeScript and discord.js v14+.**  
-> Pre-configured with command/event templates, MySQL integration, error handling, and deployment tools.
+*Built with the tools and technologies:*
 
----
-
-## 🚀 Built With
 ![JSON](https://img.shields.io/badge/-JSON-black?logo=json&logoColor=white)
 ![Markdown](https://img.shields.io/badge/-Markdown-black?logo=markdown&logoColor=white)
 ![npm](https://img.shields.io/badge/-npm-red?logo=npm&logoColor=white)
@@ -21,6 +19,8 @@
 ![ts-node](https://img.shields.io/badge/-tsnode-blue)
 ![Discord](https://img.shields.io/badge/-Discord-blueviolet?logo=discord&logoColor=white)
 ![ESLint](https://img.shields.io/badge/-ESLint-purple?logo=eslint&logoColor=white)
+
+</div>
 
 ---
 
