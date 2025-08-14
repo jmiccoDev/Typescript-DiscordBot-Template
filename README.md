@@ -5,7 +5,7 @@
 ![Last Commit](https://img.shields.io/github/last-commit/jmiccoDev/Typescript-DiscordBot-Template)
 ![TypeScript](https://img.shields.io/badge/TypeScript-100%25-blue)
 ![Languages](https://img.shields.io/github/languages/count/jmiccoDev/Typescript-DiscordBot-Template)
-![License](https://img.shields.io/github/LICENSE/jmiccoDev/Typescript-DiscordBot-Template)
+![License](https://img.shields.io/github/license/jmiccoDev/Typescript-DiscordBot-Template)
 
 *Built with the tools and technologies:*
 
