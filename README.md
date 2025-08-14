@@ -65,6 +65,7 @@ Typescript-DiscordBot-Template/
 │   ├── commands/        # Command files
 │   ├── events/          # Event handlers
 │   ├── config/          # Configurations (.env loading, constants)
+│   ├── handlers/        # Handlers interacting with the bot (Command & Event Handler, Deploy Commands, GuildCommand Manager)
 │   ├── services/        # Services Modules (Database MySQL Module)
 │   ├── tools/           # Tools functions (Cooldown, Permission Handler, Error Handler)
 │   ├── types/           # Interfaces for Commands & Events
